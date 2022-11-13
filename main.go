@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"projets.perso/Goctionary/Goctionnary/dictionary"
+	"projets.perso/Goctionnary/dictionary"
 )
 
 func main() {
@@ -12,7 +12,6 @@ func main() {
 	handleErr(err)
 	defer d.Close()
 }
-
 
 func handleErr(err error) {
 	if err != nil {
