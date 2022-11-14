@@ -3,6 +3,7 @@ package dictionary
 import (
 	"bytes"
 	"encoding/gob"
+	"sort"
 	"time"
 
 	"github.com/dgraph-io/badger/v3"
@@ -36,6 +37,38 @@ func (d *Dictionary) Get(word string) (Entry, error) {
 		return err
 	})
 	return entry, err
+}
+
+// List retrieves all dictionnary content.
+// []string is an alphabetically sorted array with the words
+// [string]Entry is a map of the words and their definition
+func (d *Dictionary) List() ([]string, map[string]Entry, error) {
+	entries := make(map[string]Entry)
+	err := d.db.View(func(txn *badger.Txn) error {
+		opts := badger.DefaultIteratorOptions
+		opts.PrefetchSize = 10
+		it := txn.NewIterator(opts)
+		defer it.Close()
+		for it.Rewind(); it.Valid(); it.Next() {
+			item := it.Item()
+			entry, err := getEntry(item)
+			if err != nil {
+				return err
+			}
+			entries[entry.Word] = entry
+		}
+		return nil
+	})
+	return sortedKeys(entries), entries, err
+}
+
+func sortedKeys(entries map[string]Entry) []string {
+	keys := make([]string, len(entries))
+	for key := range entries {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	return keys
 }
 
 func getEntry(item *badger.Item) (Entry, error) {

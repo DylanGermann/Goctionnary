@@ -11,9 +11,11 @@ func main() {
 	d, err := dictionary.New("./badger")
 	handleErr(err)
 	defer d.Close()
-	d.Add("golang", "A wonderful langage")
-	entry, _ := d.Get("Golang")
-	fmt.Println(entry)
+	d.Add("python", "A interpreted langage")
+	words, entries, _ := d.List()
+	for _, words := range words {
+		fmt.Println(entries[words])
+	}
 }
 
 func handleErr(err error) {
