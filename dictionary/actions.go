@@ -62,6 +62,12 @@ func (d *Dictionary) List() ([]string, map[string]Entry, error) {
 	return sortedKeys(entries), entries, err
 }
 
+func (d *Dictionary) Remove(word string) error {
+	return d.db.Update(func(txn *badger.Txn) error {
+		return txn.Delete([]byte(word))
+	})
+}
+
 func sortedKeys(entries map[string]Entry) []string {
 	keys := make([]string, len(entries))
 	for key := range entries {
