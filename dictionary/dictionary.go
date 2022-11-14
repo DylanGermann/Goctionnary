@@ -12,9 +12,9 @@ type Dictionary struct {
 }
 
 type Entry struct {
-	Word string
+	Word       string
 	Definition string
-	CreatedAt time.Time
+	CreatedAt  time.Time
 }
 
 func (e Entry) String() string {
@@ -23,14 +23,14 @@ func (e Entry) String() string {
 }
 
 func New(dir string) (*Dictionary, error) {
-	 // Open the Badger database located in the /tmp/badger directory.
-  	// It will be created if it doesn't exist.
-  	db, err := badger.Open(badger.DefaultOptions("/tmp/badger"))
-  	if err != nil {
-	  	return nil, err
-  	}
-  	dict := &Dictionary{
-		db:db,
+	// Open the Badger database located in the /tmp/badger directory.
+	// It will be created if it doesn't exist.
+	db, err := badger.Open(badger.DefaultOptions("/tmp/badger"))
+	if err != nil {
+		return nil, err
+	}
+	dict := &Dictionary{
+		db: db,
 	}
 	return dict, nil
 }
